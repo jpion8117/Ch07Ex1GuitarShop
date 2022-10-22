@@ -26,10 +26,17 @@ namespace GuitarShop.Controllers
                 .OrderBy(c => c.CategoryID).ToList();
 
             List<Product> products;
-            if (id == "All")
+            if (id.ToLower() == "all") //added ToLower() to make parameter more versitile
             {
                 products = context.Products
                     .OrderBy(p => p.ProductID).ToList();
+            }
+            else if (id.ToLower() == "strings") //added ToLower() to make parameter more versitile
+            {
+                products = context.Products
+                    .Where(p => p.Category.Name == "Guitars" || p.Category.Name == "Basses")
+                    .OrderBy(p => p.ProductID)
+                    .ToList();
             }
             else
             {
@@ -41,6 +48,15 @@ namespace GuitarShop.Controllers
             // use ViewBag to pass data to view
             ViewBag.Categories = categories;
             ViewBag.SelectedCategoryName = id;
+
+            // This was completely redundant since id would have to
+            // be strings in order for this to trigger and since we are
+            // already assigning ViewBag.SelectedCategoryName to the
+            // value if id then this just needlessly reassignes the
+            // value again so I commented it out for my own sanity...
+            //
+            //if (id.ToLower() == "strings")
+            //    ViewBag.SelectedCategoryName = "Strings";
 
             // bind products to view
             return View(products);
